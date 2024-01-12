@@ -609,7 +609,7 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
-
+  terraformls = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
@@ -618,6 +618,13 @@ local servers = {
       -- diagnostics = { disable = { 'missing-fields' } },
     },
   },
+  yamlls = {
+    settings = {
+      yaml = {
+        keyOrdering = false
+      }
+    }
+  }
 }
 
 -- Setup neovim lua configuration
@@ -644,6 +651,13 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
+
+vim.api.nvim_create_autocmd({"BufWritePre"}, {
+  pattern = {"*.tf", "*.tfvars"},
+  callback = function()
+    vim.lsp.buf.format()
+  end,
+})
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
