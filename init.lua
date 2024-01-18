@@ -620,6 +620,11 @@ local servers = {
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
   terraformls = {},
+  bashls = {
+    settings = {
+      filetypes = { "sh", "zsh" }
+    }
+  },
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
