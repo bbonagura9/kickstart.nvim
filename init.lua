@@ -604,7 +604,7 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
   -- clangd = {},
-  -- gopls = {},
+  gopls = {},
   pyright = {
     settings = {
       python = {
@@ -672,6 +672,16 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
   callback = function()
     vim.lsp.buf.format()
   end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {"*.py", "*.go"},
+	command = "setlocal shiftwidth=4 tabstop=4"
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = {"*.yaml", "*.tf", "*.tfvars"},
+	command = "setlocal shiftwidth=2 tabstop=2"
 })
 
 -- [[ Configure nvim-cmp ]]
