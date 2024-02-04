@@ -193,17 +193,25 @@ require('lazy').setup({
       end,
     },
   },
-
+  --
+  -- {
+  --   "folke/tokyonight.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  --   config = function()
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --   end,
+  -- },
+  --
   {
-    "folke/tokyonight.nvim",
-    lazy = false,
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000,
-    opts = {},
     config = function()
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'catppuccin-mocha'
     end,
   },
-
   -- {
   --   -- Theme inspired by Atom
   --   'navarasu/onedark.nvim',
@@ -233,7 +241,11 @@ require('lazy').setup({
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
     main = 'ibl',
-    opts = {},
+    opts = {
+      scope = {
+        enabled = false,
+      }
+    },
   },
 
   -- "gc" to comment visual regions/lines
