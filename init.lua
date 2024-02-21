@@ -74,7 +74,7 @@ require('lazy').setup({
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -336,6 +336,12 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
+
+-- Use spaces
+vim.o.expandtab = true
+vim.o.shiftwidth = 2
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
 
 -- [[ Basic Keymaps ]]
 
@@ -680,20 +686,28 @@ mason_lspconfig.setup_handlers {
 }
 
 vim.api.nvim_create_autocmd({"BufWritePre"}, {
-  pattern = {"*.tf", "*.tfvars"},
+  pattern = {"*.tf", "*.tfvars", "*.go"},
   callback = function()
     vim.lsp.buf.format()
   end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = {"*.py", "*.go"},
-	command = "setlocal shiftwidth=4 tabstop=4"
+	pattern = {"*.go", "*.py"},
+  callback = function()
+    vim.o.shiftwidth = 4
+    vim.o.tabstop = 4
+    vim.o.softtabstop = 4
+  end
 })
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {"*.yaml", "*.tf", "*.tfvars"},
-	command = "setlocal shiftwidth=2 tabstop=2"
+  callback = function()
+    vim.o.shiftwidth = 2
+    vim.o.tabstop = 2
+    vim.o.softtabstop = 2
+  end
 })
 
 -- [[ Configure nvim-cmp ]]
