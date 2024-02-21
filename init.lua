@@ -71,10 +71,9 @@ require('lazy').setup({
 
   -- Git related plugins
   'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
-  -- 'tpope/vim-sleuth',
+  'tpope/vim-sleuth',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -212,14 +211,6 @@ require('lazy').setup({
       vim.cmd.colorscheme 'catppuccin-mocha'
     end,
   },
-  -- {
-  --   -- Theme inspired by Atom
-  --   'navarasu/onedark.nvim',
-  --   priority = 1000,
-  --   config = function()
-  --     vim.cmd.colorscheme 'onedark'
-  --   end,
-  -- },
 
   {
     -- Set lualine as statusline
@@ -256,6 +247,7 @@ require('lazy').setup({
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
     dependencies = {
+      'nvim-telescope/telescope-ui-select.nvim',
       'nvim-lua/plenary.nvim',
       -- Fuzzy Finder Algorithm which requires local dependencies to be built.
       -- Only load if `make` is available. Make sure you have the system
@@ -339,9 +331,6 @@ vim.o.termguicolors = true
 
 -- Use spaces
 vim.o.expandtab = true
-vim.o.shiftwidth = 2
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
 
 -- [[ Basic Keymaps ]]
 
@@ -381,10 +370,17 @@ require('telescope').setup {
       },
     },
   },
+  -- extensions = {
+  --   ["ui-select"] = {
+  --     require("telescope.themes").get_dropdown
+  --   }
+  -- }
 }
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+
+require("telescope").load_extension("ui-select")
 
 -- Telescope live_grep in git root
 -- Function to find the git root directory based on the current buffer's path
@@ -692,22 +688,22 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
   end,
 })
 
+local function set_tab_with(width)
+  return function()
+    vim.o.shiftwidth = width
+    vim.o.tabstop = width
+    vim.o.softtabstop = width
+  end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {"*.go", "*.py"},
-  callback = function()
-    vim.o.shiftwidth = 4
-    vim.o.tabstop = 4
-    vim.o.softtabstop = 4
-  end
+  callback = set_tab_with(4)
 })
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = {"*.yaml", "*.tf", "*.tfvars"},
-  callback = function()
-    vim.o.shiftwidth = 2
-    vim.o.tabstop = 2
-    vim.o.softtabstop = 2
-  end
+  callback = set_tab_with(2)
 })
 
 -- [[ Configure nvim-cmp ]]
@@ -732,8 +728,8 @@ cmp.setup {
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
+    ['<C-y>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
