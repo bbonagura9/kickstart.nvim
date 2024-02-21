@@ -276,7 +276,7 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
+  require 'kickstart.plugins.autoformat',
   -- require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -370,11 +370,11 @@ require('telescope').setup {
       },
     },
   },
-  -- extensions = {
-  --   ["ui-select"] = {
-  --     require("telescope.themes").get_dropdown
-  --   }
-  -- }
+  extensions = {
+    ["ui-select"] = {
+      require("telescope.themes").get_dropdown(),
+    }
+  }
 }
 
 -- Enable telescope fzf native, if installed
@@ -680,13 +680,6 @@ mason_lspconfig.setup_handlers {
     }
   end,
 }
-
-vim.api.nvim_create_autocmd({"BufWritePre"}, {
-  pattern = {"*.tf", "*.tfvars", "*.go"},
-  callback = function()
-    vim.lsp.buf.format()
-  end,
-})
 
 local function set_tab_with(width)
   return function()
