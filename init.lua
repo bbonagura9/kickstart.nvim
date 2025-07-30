@@ -73,7 +73,7 @@ require('lazy').setup({
   'tpope/vim-fugitive',
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -87,7 +87,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -117,7 +117,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -304,7 +304,7 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+-- vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -379,8 +379,7 @@ require('telescope').setup {
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
-
-require("telescope").load_extension("ui-select")
+pcall(require('telescope').load_extension, 'ui-select')
 
 -- Telescope live_grep in git root
 -- Function to find the git root directory based on the current buffer's path
@@ -501,6 +500,8 @@ vim.defer_fn(function()
           -- You can use the capture groups defined in textobjects.scm
           ['aa'] = '@parameter.outer',
           ['ia'] = '@parameter.inner',
+          ['ab'] = '@block.outer',
+          ['ib'] = '@block.inner',
           ['af'] = '@function.outer',
           ['if'] = '@function.inner',
           ['ac'] = '@class.outer',
@@ -683,19 +684,23 @@ mason_lspconfig.setup_handlers {
 
 local function set_tab_with(width)
   return function()
-    vim.o.shiftwidth = width
-    vim.o.tabstop = width
-    vim.o.softtabstop = width
+    vim.bo.shiftwidth = width
+    vim.bo.tabstop = width
+    vim.bo.softtabstop = width
   end
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = {"*.go", "*.py"},
+local set_tab_with_aug = vim.api.nvim_create_augroup("SetTabWidth", {})
+
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = { "*.go", "*.py", "*.rs" },
+  group = set_tab_with_aug,
   callback = set_tab_with(4)
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = {"*.yaml", "*.tf", "*.tfvars"},
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = { "*.yaml", "*.tf", "*.tfvars", "*.lua" },
+  group = set_tab_with_aug,
   callback = set_tab_with(2)
 })
 
@@ -721,7 +726,7 @@ cmp.setup {
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
-    ['<C-y>'] = cmp.mapping.confirm {
+    ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     },
