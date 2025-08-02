@@ -273,6 +273,8 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  { 'NoahTheDuke/vim-just' },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -471,7 +473,7 @@ vim.keymap.set('v', '<A-l>', ':MoveHBlock(1)<CR>', opts)
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'scss', 'svelte', 'just' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = false,
@@ -540,6 +542,17 @@ vim.defer_fn(function()
     },
   }
 end, 0)
+
+-- nvim-treesitter justfile
+require("nvim-treesitter.parsers").get_parser_configs().just = {
+  install_info = {
+    url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
+    files = { "src/parser.c", "src/scanner.c" },
+    branch = "main",
+    -- use_makefile = true -- this may be necessary on MacOS (try if you see compiler errors)
+  },
+  maintainers = { "@IndianBoy42" },
+}
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -654,7 +667,7 @@ local servers = {
         keyOrdering = false
       }
     }
-  }
+  },
 }
 
 -- Setup neovim lua configuration
@@ -699,7 +712,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  pattern = { "*.yaml", "*.tf", "*.tfvars", "*.lua" },
+  pattern = { "*.yaml", "*.tf", "*.tfvars", "*.lua", "*.svelte" },
   group = set_tab_with_aug,
   callback = set_tab_with(2)
 })
